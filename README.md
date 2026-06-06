@@ -305,16 +305,17 @@ MusicHubは、「クラブ会場やフェス会場で音楽を楽しむ人たち
 
 ### 10-1. 使用予定の技術
 
-- フレームワーク：Ruby on Rails8
-- DB：PostgreSQL
+- フレームワーク：Ruby on Rails8 （8.1.3）
+- 言語：Ruby（4.0.4）
+- DB：PostgreSQL（18.2）, SQLite（2.9.3）
 - デプロイ先：Render, Neon
 - 使用予定ライブラリ：
   - 認証系：rails8のauthentication
-  - フロントエンドデザイン：Tailwind CSS
-  - UIの部分更新 / REST：Hotwire(Turbo + Stimulus)
-  - タグ付け(本リリース向け)：acts-as-taggable-on
-  - テスト駆動開発：Rspec
-  - リファクタリング：rubocop
+  - フロントエンドデザイン：Tailwind CSS（tailwindcss-rails 4.4.0）
+  - UIの部分更新 / REST：Hotwire(Turbo + Stimulus)（turbo-rails 2.0.23）
+  - タグ付け(本リリース向け)：acts-as-taggable-on（13.0.0）
+  - テスト駆動開発：Rspec（rspec-rails 8.0.4）
+  - リファクタリング：rubocop（1.87.0）
 
 
 ---
