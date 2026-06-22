@@ -1,0 +1,65 @@
+# MusicHub - ローカル開発用 compose（OrbStack 想定）
+#
+#   docker compose up --build        # 初回 / Gemfile変更時
+#   docker compose up                # 通常起動  → http://localhost:3000
+#   docker compose run --rm web bin/rails db:create db:migrate
+#   docker compose run --rm web bundle exec rspec
+#
+# ポイント:
+#   - build.target で Dockerfile の "development" ステージだけを使う
+#   - コードは `.:/rails` でバインドマウント（保存即反映）
+#   - gem は /usr/local/bundle（/rails の外）なのでマウントに潰されない
+
+name: musichub
+
+services:
+  web:
+    build:
+      context: .
+      target: development        # ★ マルチステージの dev ターゲットを指定
+    command: ./bin/rails server -b 0.0.0.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/rails                 # ホストのコードを即時反映
+      - bootsnap:/rails/tmp/cache # bootsnapキャッシュは永続化して再起動を速く
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:password@db:5432/musichub_development
+    depends_on:
+      db:
+        condition: service_healthy
+    tty: true        # binding.irb / debug 用
+    stdin_open: true
+
+  # Tailwind の監視ビルド（tailwindcss-rails）。Node不要。
+  css:
+    build:
+      context: .
+      target: development
+    command: bundle exec rails tailwindcss:watch
+    volumes:
+      - .:/rails
+    tty: true
+    depends_on:
+      - web
+
+  db:
+    image: postgres:18           # READMEの18.2に厳密に合わせるなら postgres:18.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: musichub_development
+    ports:
+      - "5432:5432"              # 不要ならコメントアウトしてポート衝突を避ける
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+  bootsnap:
