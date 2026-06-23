@@ -50,9 +50,11 @@ RUN apt-get update -qq && \
       build-essential git pkg-config libpq-dev libsqlite3-dev libyaml-dev && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-# Gemfile だけ先にコピー → これがレイヤキャッシュの肝。
-# アプリのコードを変えても Gemfile が変わらなければ bundle install は再実行されない。
-COPY Gemfile Gemfile.lock ./
+# Gemfile（と存在すれば Gemfile.lock）を先にコピー → レイヤキャッシュの肝。
+# ★ "Gemfile*" は Gemfile に必ずマッチし、Gemfile.lock があれば一緒にコピーする。
+#   lock が未生成でも COPY で落ちない（dev のブートストラップ用）。
+#   本番(production)は凍結インストールなので lock が無ければ正しくエラーになる。
+COPY Gemfile* ./
 
 
 ###############################################################################
