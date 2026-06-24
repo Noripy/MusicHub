@@ -1,0 +1,31 @@
+# バージョン管理 / メタ
+.git
+.gitignore
+.dockerignore
+README.md
+.github
+
+# 機密（イメージに焼き込まない）
+.env
+.env.*
+config/master.key
+config/credentials/*.key
+
+# 実行時に生成される / 持ち込む必要がないもの
+tmp/*
+!tmp/.keep
+log/*
+!log/.keep
+storage/*
+!storage/.keep
+.bundle
+
+# テスト / カバレッジ
+coverage
+spec/examples.txt
+.rspec_status
+
+# OS / エディタ
+.DS_Store
+.idea
+.vscode
