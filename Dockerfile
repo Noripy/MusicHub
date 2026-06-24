@@ -54,7 +54,7 @@ RUN apt-get update -qq && \
 # ★ "Gemfile*" は Gemfile に必ずマッチし、Gemfile.lock があれば一緒にコピーする。
 #   lock が未生成でも COPY で落ちない（dev のブートストラップ用）。
 #   本番(production)は凍結インストールなので lock が無ければ正しくエラーになる。
-COPY Gemfile* ./
+COPY Gemfile Gemfile.lock ./
 
 
 ###############################################################################
