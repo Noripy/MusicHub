@@ -1,15 +1,23 @@
 #!/bin/bash -e
 
-# MusicHub 本番エントリポイント
+# MusicHub 本番エントリポイント（Render 無料枠版）
 #
-# 方針: マイグレーションはここで実行しない。
-#       Render の "Pre-Deploy Command" に `bin/rails db:migrate` を設定し、
-#       スケール時に複数インスタンスが同時に migrate する競合を避ける。
+# 方針:
+#   Pre-Deploy Command は有料プラン専用のため使えない。
+#   代わりに、サーバ起動時にここで db:prepare を実行する。
+#   無料枠は単一インスタンスなので、複数インスタンスが同時に
+#   マイグレーションする競合は起こらず、これで安全。
 
-# jemalloc を有効化（メモリ断片化を抑え、Renderの限られたRAMで安定）
+# jemalloc を有効化（メモリ断片化を抑え、Render の限られた RAM で安定）
 if [ -z "${LD_PRELOAD+x}" ]; then
   LD_PRELOAD=$(find / -name "libjemalloc.so.2" -print -quit 2>/dev/null || true)
   export LD_PRELOAD
+fi
+
+# サーバ起動コマンドのときだけ DB を準備（console 等では走らせない）
+# Pattern C のため、Neon に primary + Solid(cache/queue/cable) テーブルを作る
+if [[ "$*" == *"server"* ]]; then
+  ./bin/rails db:prepare
 fi
 
 exec "${@}"
