@@ -88,5 +88,13 @@
    
     /* リンク文字（紫） */
     .mh-link { @apply text-[13px] font-medium text-accent; }
+
+    /* --- フラッシュメッセージ --- */
+    .flash {
+      @apply flex items-center justify-between gap-3 px-4 py-3 text-sm font-medium;
+    }
+    .flash--notice { @apply bg-state-done-bg text-state-done; }
+    .flash--alert  { @apply bg-state-unset-bg text-state-unset; }
+    .flash__close  { @apply ml-auto shrink-0 text-base leading-none opacity-60 hover:opacity-100; }
   }
    
