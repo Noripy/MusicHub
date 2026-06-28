@@ -81,11 +81,18 @@ RSpec.describe "Sessions", type: :request do
 
   describe "認証が必要なページへのアクセス制御" do
     context "未ログイン" do
-      # root_path (PagesController) は allow_unauthenticated_access で公開済み。
-      # require_authentication の動作は、認証必須アクション (sessions#destroy) で確認する。
-      it "認証必須アクションへのアクセスは new_session_path へリダイレクトされる" do
-        delete session_path
+      it "GET /events は new_session_path へリダイレクトされる" do
+        get events_path
         expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "ログイン済み" do
+      before { post session_path, params: { email_address: user.email_address, password: "password123" } }
+
+      it "GET /events は 200 を返す" do
+        get events_path
+        expect(response).to have_http_status(:ok)
       end
     end
   end
