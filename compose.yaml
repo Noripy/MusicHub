@@ -28,8 +28,8 @@ services:
       - bootsnap:/rails/tmp/cache # bootsnapキャッシュは永続化して再起動を速く
       - node_modules:/rails/node_modules # ★ npm install 済みの依存をバインドマウントから保護
     environment:
-      RAILS_ENV: development
       DATABASE_URL: postgres://postgres:password@db:5432/musichub_development
+      TEST_DATABASE_URL: postgres://postgres:password@db:5432/musichub_test
     depends_on:
       db:
         condition: service_healthy
