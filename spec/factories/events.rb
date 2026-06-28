@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :event do
-    association :user
+    user
     name { "テストイベント" }
     held_on { Time.current }
     venue { "渋谷クラブ" }

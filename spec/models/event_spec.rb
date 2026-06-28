@@ -39,7 +39,7 @@ RSpec.describe Event, type: :model do
     it "userを削除するとeventも削除される" do
       user = create(:user)
       create(:event, user: user)
-      expect { user.destroy }.to change(Event, :count).by(-1)
+      expect { user.destroy }.to change(described_class, :count).by(-1)
     end
   end
 
