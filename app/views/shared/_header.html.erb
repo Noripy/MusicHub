@@ -1,14 +1,13 @@
-<header class="site-header">
-  <div class="site-header__inner">
-    <%= link_to "MusicHub", root_path, class: "site-header__logo" %>
+<%# 全画面共通ヘッダ（Figma: appHeader / 高さ56px） %>
+<header class="flex h-header w-full items-center justify-between bg-surface px-4">
+  <%= link_to root_path, class: "flex items-center gap-2" do %>
+    <span class="flex size-[26px] items-center justify-center rounded-lg bg-accent text-sm font-bold text-white">M</span>
+    <span class="text-base font-semibold text-text-primary">MusicHub</span>
+  <% end %>
 
-    <nav class="site-nav" aria-label="メインナビゲーション">
-      <ul class="site-nav__list">
-        <li><%= link_to "ホーム", root_path %></li>
-        <li><%= link_to "楽曲一覧", "#" %></li>
-        <li><%= link_to "プレイリスト", "#" %></li>
-        <li><%= link_to "ログイン", "#" %></li>
-      </ul>
-    </nav>
+  <div class="flex items-center gap-2">
+    <%# TODO: 後続Issueで current_user.name に差し替え %>
+    <span class="text-[13px] font-medium text-text-secondary">のりぴー</span>
+    <span class="flex size-7 items-center justify-center rounded-chip border border-border bg-accent-soft text-xs font-semibold text-accent">の</span>
   </div>
 </header>

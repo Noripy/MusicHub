@@ -57,3 +57,6 @@
 
 # Kamal（Renderデプロイでは未使用）
 /.kamal/secrets
+
+# lintツール用ライブラリ
+/node_modules
