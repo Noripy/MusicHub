@@ -19,3 +19,7 @@ RSpec/MultipleExpectations:
 
 RSpec/ExampleLength:
   Max: 10
+
+# context の説明文を日本語で記述しているため英語プレフィックス規則を無効化
+RSpec/ContextWording:
+  Enabled: false

@@ -1,3 +1,4 @@
+画面遷移図・レイアウト： https://www.figma.com/design/Is4e74qnIhessCfuACFmgg/MusicHub-MVP-UI-design
 背景:    bg=#0e0e18  surface=#171723  card=#181826  input=#13131e  chip=#20202f
 ボーダー: #2b2b3d (標準)  #3a3a52 (ボタン枠)
 アクセント: #8b5cff (紫)  accent-soft=#2a1840
