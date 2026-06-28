@@ -1,0 +1,12 @@
+{
+  "name": "musichub",
+  "private": true,
+  "devDependencies": {
+    "stylelint": "^16.17.0",
+    "stylelint-config-standard": "^39.0.0",
+    "@dreamsicle.io/stylelint-config-tailwindcss": "^1.2.2"
+  },
+  "scripts": {
+    "lint:css": "stylelint \"app/assets/tailwind/**/*.css\""
+  }
+}

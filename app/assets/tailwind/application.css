@@ -1,1 +1,92 @@
 @import "tailwindcss";
+
+@theme {
+  --color-bg: #0e0e18;
+  --color-surface: #171723;
+  --color-card: #181826;
+  --color-input: #13131e;
+  --color-chip: #20202f;
+  --color-border: #2b2b3d;
+  --color-border-strong: #3a3a52;
+  --color-accent: #8b5cff;
+  --color-accent-soft: #2a1840;
+  --color-state-unset: #ff4fc3;
+  --color-state-unset-bg: #3a1230;
+  --color-state-done: #5be3a0;
+  --color-state-done-bg: #12331f;
+  --color-state-time: #2de2e6;
+  --color-text-primary: #f4f3fb;
+  --color-text-secondary: #b7b5c8;
+  --color-text-muted: #74728a;
+  --radius-chip: 999px;
+  --radius-card: 14px;
+  --radius-frame: 28px;
+  --height-header: 56px;
+  --height-footer: 38px;
+  --height-control: 3rem;
+  --height-field: 2.75rem;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* =========================================================
+   MusicHub コンポーネントクラス
+   Figma の繰り返しパターンを @apply で部品化。
+   各画面の ERB はこれらのクラスを使うだけで済む。
+   ========================================================= */
+@layer components {
+    /* 画面の外枠: body を flex-col にした上で flex-1 で縦伸長。sm以上でスマホ幅に制限しフレームを表示 */
+    .mh-screen {
+      @apply mx-auto flex w-full flex-1 flex-col bg-bg text-text-primary
+             sm:max-w-[390px] sm:border sm:border-border;
+    }
+   
+    /* body 領域（縦並び・余白・スクロール） */
+    .mh-body {
+      @apply flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-4;
+    }
+   
+    /* --- ボタン --- */
+    .mh-btn-primary {
+      @apply flex h-control w-full items-center justify-center rounded-lg
+             bg-accent text-[15px] font-semibold text-white;
+    }
+
+    .mh-btn-secondary {
+      @apply flex h-control w-full items-center justify-center rounded-lg
+             border border-border-strong text-[15px] font-medium text-text-primary;
+    }
+   
+    /* --- 入力欄 --- */
+    .mh-field { @apply flex w-full flex-col gap-1.5; }
+    .mh-label { @apply text-xs font-medium text-text-secondary; }
+
+    .mh-input {
+      @apply h-field w-full rounded-[10px] border border-border bg-input px-3.5
+             text-sm text-text-primary placeholder:text-text-muted
+             focus:border-accent focus:outline-none;
+    }
+   
+    /* --- カード --- */
+    .mh-card {
+      @apply relative flex w-full flex-col gap-2 rounded-card
+             border border-border bg-card p-3.5;
+    }
+   
+    /* --- チップ（タグ・状態バッジ） --- */
+    .mh-chip {
+      @apply inline-flex items-center rounded-chip px-2.5 py-1 text-[11px] font-medium;
+    }
+    .mh-chip-default  { @apply bg-chip text-text-secondary; }
+    .mh-chip-selected { @apply border border-accent bg-accent-soft text-accent; }
+    .mh-chip-unset    { @apply bg-state-unset-bg text-state-unset; }
+    .mh-chip-done     { @apply bg-state-done-bg text-state-done; }
+   
+    /* --- 戻る付き小見出し --- */
+    .mh-subhead { @apply flex w-full items-center gap-2.5; }
+    .mh-subhead-back  { @apply text-xl font-medium leading-none text-text-secondary; }
+    .mh-subhead-title { @apply text-lg font-semibold text-text-primary; }
+   
+    /* リンク文字（紫） */
+    .mh-link { @apply text-[13px] font-medium text-accent; }
+  }
+   

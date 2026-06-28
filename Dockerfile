@@ -64,6 +64,17 @@ COPY Gemfile Gemfile.lock ./
 FROM gems-build AS development
 ENV RAILS_ENV="development"
 
+# lint用に Node を導入（dev ステージ限定） ---
+# 本番イメージ(production)は base からやり直すので Node は一切載らない。
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
+    apt-get install --no-install-recommends -y nodejs && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+# node_modules を /rails の外に置く。
+# → compose の `.:/rails` バインドマウントでも消えない（gem と同じ思想）。
+ENV NODE_PATH="/node_modules"
+ENV PATH="/node_modules/.bin:${PATH}"
+
 RUN bundle install && \
     rm -rf "${BUNDLE_PATH}"/ruby/*/cache
 

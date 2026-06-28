@@ -18,14 +18,26 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%# Inter フォント（Figma 指定） %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-      <%= yield %>
-    </main>
+  <body class="flex min-h-dvh flex-col bg-bg font-sans text-text-primary antialiased" data-controller="theme">
+    <div class="mh-screen">
+      <%= render "shared/header" %>
+      <%= render "shared/flash" %>
+
+      <main class="mh-body">
+        <%= yield %>
+      </main>
+
+      <%= render "shared/footer" %>
+    </div>
   </body>
 </html>

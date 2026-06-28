@@ -9,6 +9,8 @@
 #   - build.target で Dockerfile の "development" ステージだけを使う
 #   - コードは `.:/rails` でバインドマウント（保存即反映）
 #   - gem は /usr/local/bundle（/rails の外）なのでマウントに潰されない
+#   - node_modules は名前付きvolumeにして、バインドマウントで消えないようにする
+#     （gem と同じ思想。stylelint 等の lint 依存を保持する用）
 
 name: musichub
 
@@ -24,6 +26,7 @@ services:
     volumes:
       - .:/rails                 # ホストのコードを即時反映
       - bootsnap:/rails/tmp/cache # bootsnapキャッシュは永続化して再起動を速く
+      - node_modules:/rails/node_modules # ★ npm install 済みの依存をバインドマウントから保護
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:password@db:5432/musichub_development
@@ -64,3 +67,4 @@ services:
 volumes:
   pgdata:
   bootsnap:
+  node_modules:   # ★ web サービスの /rails/node_modules を保持
