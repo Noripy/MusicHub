@@ -1,0 +1,51 @@
+<%# ⑥ イベント詳細 / 楽曲タイムライン %>
+<% content_for :title, "#{@event.name} — MusicHub" %>
+
+<div class="mh-subhead">
+  <%= link_to "←", events_path, class: "text-text-secondary" %>
+  <span class="text-[16px] font-bold text-text-primary"><%= @event.name %></span>
+</div>
+
+<div class="mh-card">
+  <% if @event.held_on.present? || @event.venue.present? %>
+    <p class="text-[13px] text-text-secondary">
+      <%= [@event.held_on&.strftime("%Y/%m/%d %H:%M"), @event.venue].compact.join("  ·  ") %>
+    </p>
+  <% end %>
+  <% if @event.dj_name.present? %>
+    <p class="text-[13px] text-text-secondary">DJ: <%= @event.dj_name %></p>
+  <% end %>
+</div>
+
+<div class="flex items-center justify-between">
+  <p class="text-[13px] font-semibold text-text-secondary">楽曲タイムライン（<%= @track_entries.size %>曲）</p>
+</div>
+
+<% if @track_entries.any? %>
+  <% @track_entries.each do |entry| %>
+    <div class="mh-card">
+      <% if entry.title.present? %>
+        <p class="text-[15px] font-semibold text-text-primary"><%= entry.title %></p>
+        <span class="mh-chip-done">識別済み</span>
+      <% else %>
+        <p class="text-[15px] font-semibold text-state-unset">未識別</p>
+        <span class="mh-chip-unset">未識別</span>
+      <% end %>
+
+      <% if entry.genre.present? || entry.mood.present? || entry.bpm.present? %>
+        <p class="text-[12px] text-text-muted mt-1">
+          <%= [entry.genre, entry.mood, entry.bpm && "#{entry.bpm} BPM"].compact.join("  ·  ") %>
+        </p>
+      <% end %>
+
+      <% if entry.memo.present? %>
+        <p class="text-[12px] text-text-muted mt-1"><%= entry.memo %></p>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <div class="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">
+    <p class="text-[15px] font-semibold text-text-primary">楽曲がまだありません</p>
+    <p class="text-[13px] text-text-muted">このイベントに楽曲を追加しましょう</p>
+  </div>
+<% end %>

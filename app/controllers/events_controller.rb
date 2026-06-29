@@ -3,6 +3,11 @@ class EventsController < ApplicationController
     @events = Current.user.events.order(held_on: :desc, created_at: :desc)
   end
 
+  def show
+    @event = Current.user.events.includes(:track_entries).find(params[:id])
+    @track_entries = @event.track_entries.order(created_at: :asc)
+  end
+
   def new
     @event = Current.user.events.build
   end

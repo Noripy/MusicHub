@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_28_171702) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_29_053314) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,6 +34,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_171702) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "track_entries", force: :cascade do |t|
+    t.integer "bpm"
+    t.datetime "created_at", null: false
+    t.bigint "event_id", null: false
+    t.string "genre"
+    t.text "memo"
+    t.string "mood"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_track_entries_on_event_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -45,4 +57,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_171702) do
 
   add_foreign_key "events", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "track_entries", "events"
 end
