@@ -13,7 +13,7 @@
   <p class="text-[13px] font-semibold text-text-secondary">あなたのイベント（新しい順）</p>
 
   <% @events.each do |event| %>
-    <div class="mh-card relative">
+    <%= link_to event_path(event), class: "mh-card relative block" do %>
       <div class="flex items-center justify-between">
         <span class="text-[15px] font-semibold text-text-primary"><%= event.name %></span>
       </div>
@@ -27,9 +27,7 @@
       <% if event.dj_name.present? %>
         <p class="text-[13px] text-text-secondary">DJ: <%= event.dj_name %></p>
       <% end %>
-
-      <%# TrackEntry実装後に楽曲数・ステータスチップを追加 %>
-    </div>
+    <% end %>
   <% end %>
 
   <div class="h-1"></div>

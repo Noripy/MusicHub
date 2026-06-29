@@ -84,4 +84,55 @@ RSpec.describe "Events", type: :request do
       end
     end
   end
+
+  describe "GET /events/:id" do
+    let(:event) { create(:event, user: user) }
+
+    context "ログイン済み" do
+      before { sign_in(user) }
+
+      it "200 を返す" do
+        get event_path(event)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "識別済みトラックのタイトルが表示される" do
+        create(:track_entry, event: event, title: "Identified Track")
+        get event_path(event)
+        expect(response.body).to include("Identified Track")
+      end
+
+      it "track_entries が時系列（created_at: asc）で並んでいる" do
+        create(:track_entry, event: event, title: "最初の曲", created_at: 1.hour.ago)
+        create(:track_entry, event: event, title: "次の曲",  created_at: 30.minutes.ago)
+        get event_path(event)
+        expect(response.body.index("最初の曲")).to be < response.body.index("次の曲")
+      end
+
+      it "title が nil のトラックは「未識別」と表示される" do
+        create(:track_entry, event: event, title: nil)
+        get event_path(event)
+        expect(response.body).to include("未識別")
+      end
+    end
+
+    context "ログイン済み・他のユーザーのイベント" do
+      let(:other_user)  { create(:user) }
+      let(:other_event) { create(:event, user: other_user) }
+
+      before { sign_in(user) }
+
+      it "404 を返す" do
+        get event_path(other_event)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        get event_path(event)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
 end
