@@ -135,4 +135,117 @@ RSpec.describe "Events", type: :request do
       end
     end
   end
+
+  describe "GET /events/:id/edit" do
+    let(:event) { create(:event, user: user) }
+
+    context "ログイン済み" do
+      before { sign_in(user) }
+
+      it "200 を返す" do
+        get edit_event_path(event)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "既存の値がフォームに表示される" do
+        get edit_event_path(event)
+        expect(response.body).to include(event.name)
+      end
+    end
+
+    context "ログイン済み・他のユーザーのイベント" do
+      let(:other_user)  { create(:user) }
+      let(:other_event) { create(:event, user: other_user) }
+
+      before { sign_in(user) }
+
+      it "404 を返す" do
+        get edit_event_path(other_event)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        get edit_event_path(event)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
+  describe "PATCH /events/:id" do
+    let(:event) { create(:event, user: user) }
+    let(:update_params) do
+      {
+        event: {
+          name: "更新後イベント",
+          held_on: "2026-08-01 23:00:00",
+          venue: "新宿クラブ",
+          dj_name: "DJ Updated"
+        }
+      }
+    end
+
+    context "ログイン済み・有効なパラメータ" do
+      before { sign_in(user) }
+
+      it "name が更新される" do
+        patch event_path(event), params: update_params
+        expect(event.reload.name).to eq("更新後イベント")
+      end
+
+      it "venue が更新される" do
+        patch event_path(event), params: update_params
+        expect(event.reload.venue).to eq("新宿クラブ")
+      end
+
+      it "dj_name が更新される" do
+        patch event_path(event), params: update_params
+        expect(event.reload.dj_name).to eq("DJ Updated")
+      end
+
+      it "event_path へリダイレクトされる" do
+        patch event_path(event), params: update_params
+        expect(response).to redirect_to(event_path(event))
+      end
+
+      it "更新成功のフラッシュメッセージが設定される" do
+        patch event_path(event), params: update_params
+        expect(flash[:notice]).to eq("イベントを更新しました")
+      end
+    end
+
+    context "ログイン済み・name が空" do
+      before { sign_in(user) }
+
+      it "更新されない" do
+        patch event_path(event), params: { event: update_params[:event].merge(name: "") }
+        expect(event.reload.name).to eq("テストイベント")
+      end
+
+      it "422 を返す" do
+        patch event_path(event), params: { event: update_params[:event].merge(name: "") }
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context "ログイン済み・他のユーザーのイベント" do
+      let(:other_user)  { create(:user) }
+      let(:other_event) { create(:event, user: other_user) }
+
+      before { sign_in(user) }
+
+      it "404 を返す" do
+        patch event_path(other_event), params: update_params
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        patch event_path(event), params: update_params
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
 end

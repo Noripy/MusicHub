@@ -4,6 +4,7 @@
 <div class="mh-subhead">
   <%= link_to "←", events_path, class: "text-text-secondary" %>
   <span class="text-[16px] font-bold text-text-primary"><%= @event.name %></span>
+  <%= link_to "編集", edit_event_path(@event), class: "mh-link ml-auto" %>
 </div>
 
 <div class="mh-card">

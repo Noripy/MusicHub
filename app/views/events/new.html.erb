@@ -6,48 +6,4 @@
   <span class="mh-subhead-title">イベント登録</span>
 </div>
 
-<% if @event.errors.any? %>
-  <div class="rounded-[10px] border border-state-unset bg-state-unset-bg px-4 py-3">
-    <ul class="space-y-1 text-[13px] text-state-unset">
-      <% @event.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-
-<%= form_with model: @event do |f| %>
-  <div class="flex flex-col gap-4">
-    <div class="mh-field">
-      <%= f.label :name, "イベント名", class: "mh-label" %>
-      <%= f.text_field :name,
-            class: "mh-input",
-            placeholder: "例: WARP NIGHT",
-            required: true %>
-    </div>
-
-    <div class="mh-field">
-      <%= f.label :held_on, "開催日時", class: "mh-label" %>
-      <%= f.datetime_local_field :held_on,
-            class: "mh-input" %>
-    </div>
-
-    <div class="mh-field">
-      <%= f.label :venue, "会場", class: "mh-label" %>
-      <%= f.text_field :venue,
-            class: "mh-input",
-            placeholder: "例: 渋谷 clubasia" %>
-    </div>
-
-    <div class="mh-field">
-      <%= f.label :dj_name, "DJ名", class: "mh-label" %>
-      <%= f.text_field :dj_name,
-            class: "mh-input",
-            placeholder: "例: DJ NOBU" %>
-    </div>
-
-    <div class="h-2"></div>
-
-    <%= f.submit "登録する", class: "mh-btn-primary cursor-pointer" %>
-  </div>
-<% end %>
+<%= render "form", submit_label: "登録する" %>

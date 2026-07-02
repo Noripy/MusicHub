@@ -21,6 +21,19 @@ class EventsController < ApplicationController
     end
   end
 
+  def edit
+    @event = Current.user.events.find(params[:id])
+  end
+
+  def update
+    @event = Current.user.events.find(params[:id])
+    if @event.update(event_params)
+      redirect_to event_path(@event), notice: "イベントを更新しました"
+    else
+      render :edit, status: :unprocessable_content
+    end
+  end
+
   private
 
     def event_params
