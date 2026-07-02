@@ -1,0 +1,9 @@
+<%# イベント編集 %>
+<% content_for :title, "イベント編集 — MusicHub" %>
+
+<div class="mh-subhead">
+  <%= link_to event_path(@event), class: "mh-subhead-back" do %>←<% end %>
+  <span class="mh-subhead-title">イベント編集</span>
+</div>
+
+<%= render "form", submit_label: "更新する" %>
