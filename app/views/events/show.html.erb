@@ -50,3 +50,9 @@
     <p class="text-[13px] text-text-muted">このイベントに楽曲を追加しましょう</p>
   </div>
 <% end %>
+
+<div class="mt-6">
+  <%= button_to "イベントを削除", event_path(@event), method: :delete,
+        class: "mh-btn-secondary w-full",
+        data: { turbo_confirm: "このイベントと登録した楽曲をすべて削除します。よろしいですか？" } %>
+</div>
