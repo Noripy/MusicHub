@@ -248,4 +248,61 @@ RSpec.describe "Events", type: :request do
       end
     end
   end
+
+  describe "DELETE /events/:id" do
+    let!(:event) { create(:event, user: user) }
+
+    context "ログイン済み" do
+      before { sign_in(user) }
+
+      it "Event が 1 件減る" do
+        expect {
+          delete event_path(event)
+        }.to change(Event, :count).by(-1)
+      end
+
+      it "紐づく track_entries も一緒に削除される" do
+        create(:track_entry, event: event)
+        create(:track_entry, event: event)
+        expect {
+          delete event_path(event)
+        }.to change(TrackEntry, :count).by(-2)
+      end
+
+      it "events_path へリダイレクトされる" do
+        delete event_path(event)
+        expect(response).to redirect_to(events_path)
+      end
+
+      it "削除成功のフラッシュメッセージが設定される" do
+        delete event_path(event)
+        expect(flash[:notice]).to eq("イベントを削除しました")
+      end
+    end
+
+    context "ログイン済み・他のユーザーのイベント" do
+      let(:other_user)  { create(:user) }
+      let!(:other_event) { create(:event, user: other_user) }
+
+      before { sign_in(user) }
+
+      it "404 を返す" do
+        delete event_path(other_event)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "Event は削除されない" do
+        expect {
+          delete event_path(other_event)
+        }.not_to change(Event, :count)
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        delete event_path(event)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
 end
