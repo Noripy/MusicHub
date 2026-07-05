@@ -4,13 +4,27 @@ class TrackEntry < ApplicationRecord
   # タグ列は配列型（null: false, default: []）。フォーム未入力等でnilが渡ってもDB制約に違反しないよう空配列に正規化する。
   before_validation :normalize_tags
 
+  # 情報が何もない空の楽曲を防ぐため、ジャンルと雰囲気タグは最低1つずつ必須。
+  # message は各フィールド直下にそのまま出すため、属性名なしで完結する文言にする。
+  validates :genre, presence: { message: "ジャンルを1つ以上入力してください" }
+  validates :mood, presence: { message: "雰囲気タグを1つ以上入力してください" }
+
   # 体感BPMは任意入力。入力時は0以上の整数のみ許可する。
-  validates :bpm, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
+  # message は各フィールド直下にそのまま出すため、属性名なしで完結する文言にする。
+  validates :bpm,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 0,
+              message: "0以上の整数で入力してください"
+            },
+            allow_nil: true
 
   private
 
+  # nil を空配列に、また空文字などの無効なタグを取り除く。
+  # これにより「空文字だけのタグ」を presence 検証で正しく無効と判定できる。
   def normalize_tags
-    self.genre = [] if genre.nil?
-    self.mood = [] if mood.nil?
+    self.genre = Array(genre).reject(&:blank?)
+    self.mood = Array(mood).reject(&:blank?)
   end
 end

@@ -30,6 +30,18 @@ RSpec.describe TrackEntry, type: :model do
         expect(track).not_to be_valid
         expect(track.errors[:bpm]).to be_present
       end
+
+      it "小数のとき無効" do
+        track = build(:track_entry, bpm: 128.5)
+        expect(track).not_to be_valid
+        expect(track.errors[:bpm]).to be_present
+      end
+
+      it "数値でない文字列のとき無効" do
+        track = build(:track_entry, bpm: "abc")
+        expect(track).not_to be_valid
+        expect(track.errors[:bpm]).to be_present
+      end
     end
   end
 
@@ -44,14 +56,40 @@ RSpec.describe TrackEntry, type: :model do
       expect(track.reload.mood).to eq(%w[Dark Euphoric])
     end
 
-    it "genre のデフォルトは空配列" do
-      track = create(:track_entry, genre: nil)
-      expect(track.reload.genre).to eq([])
+    it "genre に nil を渡すと空配列に正規化される" do
+      track = build(:track_entry, genre: nil)
+      track.valid?
+      expect(track.genre).to eq([])
     end
 
-    it "mood のデフォルトは空配列" do
-      track = create(:track_entry, mood: nil)
-      expect(track.reload.mood).to eq([])
+    it "mood に nil を渡すと空配列に正規化される" do
+      track = build(:track_entry, mood: nil)
+      track.valid?
+      expect(track.mood).to eq([])
+    end
+  end
+
+  describe "タグの必須要件（空の楽曲を防ぐ）" do
+    it "genre と mood の両方があれば有効" do
+      expect(build(:track_entry, genre: %w[Techno], mood: %w[Dark])).to be_valid
+    end
+
+    it "genre が空だと無効" do
+      track = build(:track_entry, genre: [], mood: %w[Dark])
+      expect(track).not_to be_valid
+      expect(track.errors[:genre]).to be_present
+    end
+
+    it "mood が空だと無効" do
+      track = build(:track_entry, genre: %w[Techno], mood: [])
+      expect(track).not_to be_valid
+      expect(track.errors[:mood]).to be_present
+    end
+
+    it "両方空だと無効（曲名だけでは登録できない）" do
+      track = build(:track_entry, title: "Strobe", genre: [], mood: [])
+      expect(track).not_to be_valid
+      expect(track.errors.attribute_names).to include(:genre, :mood)
     end
   end
 
