@@ -1,0 +1,13 @@
+<%# ⑨ 楽曲エントリ登録 %>
+<% content_for :title, "楽曲を追加 — MusicHub" %>
+
+<div class="mh-subhead">
+  <%= link_to "←", event_path(@event), class: "text-text-secondary" %>
+  <span class="text-[16px] font-bold text-text-primary">楽曲を追加</span>
+</div>
+
+<p class="text-[13px] text-text-muted">
+  <%= @event.name %> に楽曲を記録します。曲名がわからなくても登録できます。
+</p>
+
+<%= render "form", track_entry: @track_entry, event: @event %>

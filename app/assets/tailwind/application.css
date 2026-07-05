@@ -65,6 +65,15 @@
              text-sm text-text-primary placeholder:text-text-muted
              focus:border-accent focus:outline-none;
     }
+
+    /* バリデーションエラー時（HTMLネイティブ検証風のインライン表示） */
+    .mh-input-error {
+      @apply border-state-unset focus:border-state-unset;
+    }
+
+    .mh-error {
+      @apply text-xs text-state-unset;
+    }
    
     /* --- カード --- */
     .mh-card {

@@ -1,0 +1,28 @@
+<%# タグのチップ入力フィールド。attribute（:genre / :mood）ごとに配列を入力する。 %>
+<% has_error = record.errors[attribute].present? %>
+<div class="mh-field"
+     data-controller="chip-input"
+     data-chip-input-name-value="track_entry[<%= attribute %>][]">
+  <%= label_tag "track_entry_#{attribute}_input", label, class: "mh-label" %>
+
+  <div class="flex flex-wrap items-center gap-2 rounded-[10px] border bg-input px-3 py-2 <%= has_error ? "border-state-unset" : "border-white/10" %>"
+       data-chip-input-target="chips">
+    <% Array(values).reject(&:blank?).each do |tag| %>
+      <span data-chip
+            class="inline-flex items-center gap-1 rounded-full bg-chip px-3 py-1 text-[13px] text-text-primary">
+        <%= hidden_field_tag "track_entry[#{attribute}][]", tag, id: nil %>
+        <span><%= tag %></span>
+        <button type="button" class="text-text-muted" data-action="chip-input#remove">×</button>
+      </span>
+    <% end %>
+
+    <input type="text"
+           id="track_entry_<%= attribute %>_input"
+           class="flex-1 min-w-[8ch] bg-transparent text-[14px] text-text-primary placeholder:text-text-muted focus:outline-none"
+           placeholder="<%= placeholder %>"
+           data-chip-input-target="input"
+           data-action="keydown->chip-input#add blur->chip-input#blur">
+  </div>
+
+  <%= field_error(record, attribute) %>
+</div>

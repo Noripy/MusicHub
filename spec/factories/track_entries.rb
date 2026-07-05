@@ -3,7 +3,7 @@ FactoryBot.define do
     event
     title { "テスト曲" }
     genre { %w[Techno] }
-    mood { [] }
+    mood { %w[Dark] }
     bpm { nil }
     memo { nil }
     identified { false }

@@ -1,0 +1,58 @@
+<%= form_with model: [event, track_entry] do |f| %>
+  <div class="flex flex-col gap-4">
+    <div class="mh-field">
+      <%= f.label :title, "曲名（任意）", class: "mh-label" %>
+      <%= f.text_field :title,
+            class: ["mh-input", input_error_class(track_entry, :title)],
+            placeholder: "わからなければ空欄でOK" %>
+      <%= field_error(track_entry, :title) %>
+    </div>
+
+    <%= render "chip_field",
+          record: track_entry,
+          attribute: :genre,
+          label: "ジャンル",
+          values: track_entry.genre,
+          placeholder: "例: Techno（Enterで追加）" %>
+
+    <%= render "chip_field",
+          record: track_entry,
+          attribute: :mood,
+          label: "雰囲気タグ",
+          values: track_entry.mood,
+          placeholder: "例: Dark（Enterで追加）" %>
+
+    <% bpm_error = track_entry.errors[:bpm].present? %>
+    <div class="mh-field" data-controller="numeric-input">
+      <%= f.label :bpm, "体感BPM（任意）", class: "mh-label" %>
+      <%= f.number_field :bpm,
+            class: ["mh-input", input_error_class(track_entry, :bpm)],
+            min: 0,
+            step: 1,
+            inputmode: "numeric",
+            placeholder: "例: 128",
+            "aria-invalid": bpm_error,
+            "aria-describedby": field_error_id(track_entry, :bpm),
+            data: {
+              "numeric-input-target": "input",
+              action: "keydown->numeric-input#keydown input->numeric-input#sanitize"
+            } %>
+      <p class="mh-error <%= "hidden" unless bpm_error %>"
+         id="<%= field_error_id(track_entry, :bpm) %>"
+         data-numeric-input-target="message">0以上の整数で入力してください</p>
+    </div>
+
+    <div class="mh-field">
+      <%= f.label :memo, "メモ（任意）", class: "mh-label" %>
+      <%= f.text_area :memo,
+            class: ["mh-input", input_error_class(track_entry, :memo)],
+            rows: 3,
+            placeholder: "気づいたことをメモ" %>
+      <%= field_error(track_entry, :memo) %>
+    </div>
+
+    <div class="h-2"></div>
+
+    <%= f.submit "楽曲を登録", class: "mh-btn-primary cursor-pointer" %>
+  </div>
+<% end %>

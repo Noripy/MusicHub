@@ -20,6 +20,7 @@
 
 <div class="flex items-center justify-between">
   <p class="text-[13px] font-semibold text-text-secondary">楽曲タイムライン（<%= @track_entries.size %>曲）</p>
+  <%= link_to "＋ 楽曲を追加", new_event_track_entry_path(@event), class: "mh-link" %>
 </div>
 
 <% if @track_entries.any? %>
@@ -48,6 +49,7 @@
   <div class="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">
     <p class="text-[15px] font-semibold text-text-primary">楽曲がまだありません</p>
     <p class="text-[13px] text-text-muted">このイベントに楽曲を追加しましょう</p>
+    <%= link_to "＋ 楽曲を追加", new_event_track_entry_path(@event), class: "mh-btn-primary" %>
   </div>
 <% end %>
 
