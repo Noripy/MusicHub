@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_29_053314) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_02_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,9 +38,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_29_053314) do
     t.integer "bpm"
     t.datetime "created_at", null: false
     t.bigint "event_id", null: false
-    t.string "genre"
+    t.string "genre", default: [], null: false, array: true
+    t.boolean "identified", default: false, null: false
     t.text "memo"
-    t.string "mood"
+    t.string "mood", default: [], null: false, array: true
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_track_entries_on_event_id"
