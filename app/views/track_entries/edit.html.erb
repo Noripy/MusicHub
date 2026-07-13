@@ -1,0 +1,13 @@
+<%# ⑩ 楽曲エントリ編集 %>
+<% content_for :title, "楽曲を編集 — MusicHub" %>
+
+<div class="mh-subhead">
+  <%= link_to "←", event_path(@event), class: "text-text-secondary" %>
+  <span class="text-[16px] font-bold text-text-primary">楽曲を編集</span>
+</div>
+
+<p class="text-[13px] text-text-muted">
+  <%= @event.name %> わからなかった曲名を後から追記できます
+</p>
+
+<%= render "form", track_entry: @track_entry, event: @event %>

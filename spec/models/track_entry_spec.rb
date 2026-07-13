@@ -93,15 +93,34 @@ RSpec.describe TrackEntry, type: :model do
     end
   end
 
-  describe "identified（識別済みフラグ）" do
-    it "デフォルトは false" do
-      track = create(:track_entry)
+  describe "identified（識別済みフラグ・title から自動導出）" do
+    it "title が空なら保存時に false になる（未識別）" do
+      track = create(:track_entry, title: "")
       expect(track.reload.identified).to be(false)
     end
 
-    it "true に設定できる" do
-      track = create(:track_entry, identified: true)
+    it "title があれば保存時に自動で true になる（識別済み）" do
+      track = create(:track_entry, title: "Strobe")
       expect(track.reload.identified).to be(true)
+    end
+
+    it "未識別で作成後に title を追記して更新すると true になる（機能⑩の核）" do
+      track = create(:track_entry, title: "")
+      expect(track.reload.identified).to be(false)
+
+      track.update!(title: "Strobe")
+      expect(track.reload.identified).to be(true)
+    end
+
+    it "title を空に戻すと false に戻る（未識別へ差し戻し）" do
+      track = create(:track_entry, title: "Strobe")
+      track.update!(title: "")
+      expect(track.reload.identified).to be(false)
+    end
+
+    it "identified を手動で true にしても title が空なら false になる（title が唯一の判定基準）" do
+      track = create(:track_entry, title: "", identified: true)
+      expect(track.reload.identified).to be(false)
     end
   end
 

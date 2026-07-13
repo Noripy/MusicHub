@@ -53,6 +53,6 @@
 
     <div class="h-2"></div>
 
-    <%= f.submit "楽曲を登録", class: "mh-btn-primary cursor-pointer" %>
+    <%= f.submit(track_entry.new_record? ? "楽曲を登録" : "楽曲を更新", class: "mh-btn-primary cursor-pointer") %>
   </div>
 <% end %>

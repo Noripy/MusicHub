@@ -14,6 +14,19 @@ class TrackEntriesController < ApplicationController
     end
   end
 
+  def edit
+    @track_entry = @event.track_entries.find(params[:id])
+  end
+
+  def update
+    @track_entry = @event.track_entries.find(params[:id])
+    if @track_entry.update(track_entry_params)
+      redirect_to event_path(@event), notice: "楽曲を更新しました"
+    else
+      render :edit, status: :unprocessable_content
+    end
+  end
+
   private
 
     # ログイン中ユーザーのイベントに限定。他人のイベントは RecordNotFound。
