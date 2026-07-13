@@ -27,6 +27,12 @@ class TrackEntriesController < ApplicationController
     end
   end
 
+  def destroy
+    @track_entry = @event.track_entries.find(params[:id])
+    @track_entry.destroy
+    redirect_to event_path(@event), notice: "楽曲を削除しました"
+  end
+
   private
 
     # ログイン中ユーザーのイベントに限定。他人のイベントは RecordNotFound。

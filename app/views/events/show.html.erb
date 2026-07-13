@@ -43,6 +43,12 @@
       <% if entry.memo.present? %>
         <p class="text-[12px] text-text-muted mt-1"><%= entry.memo %></p>
       <% end %>
+
+      <div class="mt-2 flex justify-end">
+        <%= button_to "削除", event_track_entry_path(@event, entry), method: :delete,
+              class: "mh-link",
+              data: { turbo_confirm: "この楽曲を削除します。よろしいですか？" } %>
+      </div>
     </div>
   <% end %>
 <% else %>

@@ -251,4 +251,52 @@ RSpec.describe "TrackEntries", type: :request do
       end
     end
   end
+
+  describe "DELETE /events/:event_id/track_entries/:id" do
+    let!(:track_entry) { create(:track_entry, event: event) }
+
+    context "ログイン済み・自分のイベントの楽曲" do
+      before { sign_in(user) }
+
+      it "TrackEntry が 1 件減る" do
+        expect {
+          delete event_track_entry_path(event, track_entry)
+        }.to change(TrackEntry, :count).by(-1)
+      end
+
+      it "イベント詳細へリダイレクトされる" do
+        delete event_track_entry_path(event, track_entry)
+        expect(response).to redirect_to(event_path(event))
+      end
+
+      it "削除成功のフラッシュメッセージが設定される" do
+        delete event_track_entry_path(event, track_entry)
+        expect(flash[:notice]).to eq("楽曲を削除しました")
+      end
+    end
+
+    context "ログイン済み・他人のイベントの楽曲" do
+      let!(:other_track_entry) { create(:track_entry, event: create(:event)) }
+
+      before { sign_in(user) }
+
+      it "404 を返す" do
+        delete event_track_entry_path(other_track_entry.event, other_track_entry)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "TrackEntry は削除されない" do
+        expect {
+          delete event_track_entry_path(other_track_entry.event, other_track_entry)
+        }.not_to change(TrackEntry, :count)
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        delete event_track_entry_path(event, track_entry)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
 end
