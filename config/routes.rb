@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resource :registration, only: %i[new create]
   resources :passwords, param: :token
   resources :events, only: %i[index new create show edit update destroy] do
-    resources :track_entries, only: %i[new create]
+    resources :track_entries, only: %i[new create edit update]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

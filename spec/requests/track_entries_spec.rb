@@ -166,4 +166,89 @@ RSpec.describe "TrackEntries", type: :request do
       end
     end
   end
+
+  describe "GET /events/:event_id/track_entries/:id/edit" do
+    let!(:track_entry) { create(:track_entry, event: event, title: "") }
+
+    context "ログイン済み・自分のイベント" do
+      before { sign_in(user) }
+
+      it "200 を返す" do
+        get edit_event_track_entry_path(event, track_entry)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "ログイン済み・他人のイベント" do
+      before { sign_in(user) }
+
+      it "404 を返す" do
+        others_event = create(:event)
+        others_track_entry = create(:track_entry, event: others_event)
+        get edit_event_track_entry_path(others_event, others_track_entry)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        get edit_event_track_entry_path(event, track_entry)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
+  describe "PATCH /events/:event_id/track_entries/:id" do
+    let!(:track_entry) { create(:track_entry, event: event, title: "") }
+
+    context "ログイン済み・曲名を追記して更新（機能⑩の核）" do
+      before { sign_in(user) }
+
+      it "identified が true に切り替わる" do
+        patch event_track_entry_path(event, track_entry), params: { track_entry: { title: "Strobe" } }
+        expect(track_entry.reload).to have_attributes(title: "Strobe", identified: true)
+      end
+
+      it "イベント詳細へリダイレクトされフラッシュが出る" do
+        patch event_track_entry_path(event, track_entry), params: { track_entry: { title: "Strobe" } }
+        expect(response).to redirect_to(event_path(event))
+        expect(flash[:notice]).to eq("楽曲を更新しました")
+      end
+    end
+
+    context "ログイン済み・不正な値で更新" do
+      before { sign_in(user) }
+
+      it "更新されず 422 を返す" do
+        patch event_track_entry_path(event, track_entry), params: { track_entry: { bpm: -1 } }
+        expect(track_entry.reload.bpm).to be_nil
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "適切な入力を促すエラーメッセージが表示される" do
+        patch event_track_entry_path(event, track_entry), params: { track_entry: { bpm: -1 } }
+        expect(response.body).to include("0以上の整数で入力してください")
+      end
+    end
+
+    context "ログイン済み・他人のイベント" do
+      before { sign_in(user) }
+
+      it "404 を返し更新されない" do
+        others_event = create(:event)
+        others_track_entry = create(:track_entry, event: others_event, title: "")
+        patch event_track_entry_path(others_event, others_track_entry),
+              params: { track_entry: { title: "Strobe" } }
+        expect(response).to have_http_status(:not_found)
+        expect(others_track_entry.reload.title).to eq("")
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        patch event_track_entry_path(event, track_entry), params: { track_entry: { title: "Strobe" } }
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
 end
