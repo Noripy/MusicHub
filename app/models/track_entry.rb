@@ -1,6 +1,9 @@
 class TrackEntry < ApplicationRecord
   belongs_to :event
 
+  # 未識別エントリ一覧（機能⑫）向けの絞り込み。identified にインデックスを張って高速化する。
+  scope :unidentified, -> { where(identified: false) }
+
   # タグ列は配列型（null: false, default: []）。フォーム未入力等でnilが渡ってもDB制約に違反しないよう空配列に正規化する。
   before_validation :normalize_tags
 

@@ -1,0 +1,37 @@
+<%# ⑫ 未識別エントリ一覧（全イベント横断のTODOリスト） %>
+<% content_for :title, "未識別の曲 — MusicHub" %>
+
+<div class="mh-subhead">
+  <%= link_to "←", events_path, class: "text-text-secondary" %>
+  <span class="text-[16px] font-bold text-text-primary">未識別の曲</span>
+</div>
+
+<% if @track_entries.any? %>
+  <p class="text-[13px] font-semibold text-text-secondary">未識別（<%= @track_entries.size %>曲）</p>
+
+  <% @track_entries.each do |entry| %>
+    <%= link_to edit_event_track_entry_path(entry.event, entry), class: "mh-card block" do %>
+      <div class="flex items-center justify-between">
+        <span class="text-[15px] font-semibold text-state-unset">未識別</span>
+        <span class="mh-chip-unset">未識別</span>
+      </div>
+
+      <p class="text-[13px] text-text-secondary mt-1"><%= entry.event.name %></p>
+
+      <% if entry.genre.present? || entry.mood.present? || entry.bpm.present? %>
+        <p class="text-[12px] text-text-muted mt-1">
+          <%= [entry.genre, entry.mood, entry.bpm && "#{entry.bpm} BPM"].compact.join("  ·  ") %>
+        </p>
+      <% end %>
+
+      <% if entry.memo.present? %>
+        <p class="text-[12px] text-text-muted mt-1"><%= entry.memo %></p>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+  <div class="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">
+    <p class="text-[15px] font-semibold text-text-primary">未識別の楽曲はありません</p>
+    <p class="text-[13px] text-text-muted">曲名がわからない楽曲を登録すると<br>ここに表示されます</p>
+  </div>
+<% end %>
