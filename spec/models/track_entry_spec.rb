@@ -124,6 +124,15 @@ RSpec.describe TrackEntry, type: :model do
     end
   end
 
+  describe ".unidentified（未識別エントリの絞り込みスコープ）" do
+    it "identified が false のエントリのみを返す" do
+      unidentified = create(:track_entry, title: "")
+      create(:track_entry, title: "Strobe")
+
+      expect(described_class.unidentified).to contain_exactly(unidentified)
+    end
+  end
+
   describe "アソシエーション" do
     it "event に属する" do
       event = create(:event)

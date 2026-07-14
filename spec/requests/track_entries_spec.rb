@@ -8,6 +8,57 @@ RSpec.describe "TrackEntries", type: :request do
     post session_path, params: { email_address: user.email_address, password: "password123" }
   end
 
+  describe "GET /track_entries（未識別エントリ一覧・全イベント横断）" do
+    context "ログイン済み" do
+      before { sign_in(user) }
+
+      it "200 を返す" do
+        get track_entries_path
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "自分のイベントの未識別エントリのみを新しい順に表示する" do
+        other_event = create(:event, user: user, name: "Other Event")
+        create(:track_entry, event: event, title: "", memo: "古いメモ", created_at: 2.days.ago)
+        create(:track_entry, event: other_event, title: "", memo: "新しいメモ", created_at: 1.day.ago)
+        create(:track_entry, event: event, title: "Strobe") # 識別済みは含まれない
+
+        get track_entries_path
+
+        expect(response.body.index("新しいメモ")).to be < response.body.index("古いメモ")
+      end
+
+      it "識別済みエントリは含まれない" do
+        create(:track_entry, event: event, title: "Strobe")
+
+        get track_entries_path
+
+        expect(response.body).not_to include("Strobe")
+      end
+
+      it "他人のイベントの未識別エントリは含まれない" do
+        others_event = create(:event)
+        create(:track_entry, event: others_event, title: "", memo: "他人のメモ")
+
+        get track_entries_path
+
+        expect(response.body).not_to include("他人のメモ")
+      end
+
+      it "未識別のエントリがなければ空状態のメッセージを表示する" do
+        get track_entries_path
+        expect(response.body).to include("未識別の楽曲はありません")
+      end
+    end
+
+    context "未ログイン" do
+      it "new_session_path へリダイレクトされる" do
+        get track_entries_path
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
   describe "GET /events/:event_id/track_entries/new" do
     context "ログイン済み・自分のイベント" do
       before { sign_in(user) }

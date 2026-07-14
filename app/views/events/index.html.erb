@@ -31,7 +31,9 @@
   <% end %>
 
   <div class="h-1"></div>
-  <p class="text-[13px] font-medium text-accent">🔎 未識別の曲を見る →</p>
+  <%= link_to track_entries_path, class: "text-[13px] font-medium text-accent" do %>
+    🔎 未識別の曲を見る →
+  <% end %>
 
 <% else %>
   <div class="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">

@@ -1,5 +1,10 @@
 class TrackEntriesController < ApplicationController
-  before_action :set_event
+  before_action :set_event, except: :index
+
+  # 全イベント横断で自分の未識別エントリのみを新しい順に表示する（機能⑫）。
+  def index
+    @track_entries = Current.user.track_entries.unidentified.includes(:event).order(created_at: :desc)
+  end
 
   def new
     @track_entry = @event.track_entries.build
