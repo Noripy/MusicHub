@@ -63,6 +63,22 @@ RSpec.describe "Passwords", type: :request do
       get edit_password_path("invalid-token")
       expect(flash[:alert]).to eq("パスワード再設定リンクが無効か、有効期限が切れています。")
     end
+
+    it "発行から15分を超えた期限切れトークンは new_password_path へリダイレクトされる" do
+      token = user.password_reset_token
+      travel 16.minutes do
+        get edit_password_path(token)
+        expect(response).to redirect_to(new_password_path)
+      end
+    end
+
+    it "期限切れトークンならエラーメッセージがフラッシュに設定される" do
+      token = user.password_reset_token
+      travel 16.minutes do
+        get edit_password_path(token)
+        expect(flash[:alert]).to eq("パスワード再設定リンクが無効か、有効期限が切れています。")
+      end
+    end
   end
 
   describe "PUT /passwords/:token" do
@@ -97,6 +113,20 @@ RSpec.describe "Passwords", type: :request do
         token = user.password_reset_token
         put password_path(token), params: { password: "new_password123", password_confirmation: "mismatch" }
         expect(response).to redirect_to(edit_password_path(token))
+      end
+    end
+
+    context "期限切れトークン" do
+      it "パスワードが更新されず new_password_path へリダイレクトされる" do
+        token = user.password_reset_token
+        original_digest = user.password_digest
+
+        travel 16.minutes do
+          put password_path(token), params: { password: "new_password123", password_confirmation: "new_password123" }
+          expect(response).to redirect_to(new_password_path)
+        end
+
+        expect(user.reload.password_digest).to eq(original_digest)
       end
     end
   end

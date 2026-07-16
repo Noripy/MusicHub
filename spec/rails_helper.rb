@@ -37,6 +37,7 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # HostAuthorization は (?:[a-z0-9-]+\.)?<tld> 形式を許可している。
   # デフォルト許可済みの .test に合わせて example.test を使用する。
