@@ -11,7 +11,7 @@ class PasswordsController < ApplicationController
       PasswordsMailer.reset(user).deliver_later
     end
 
-    redirect_to new_session_path, notice: "Password reset instructions sent (if user with that email address exists)."
+    redirect_to new_session_path, notice: "パスワード再設定の案内を送信しました（該当のメールアドレスが登録されている場合）。"
   end
 
   def edit
@@ -20,9 +20,9 @@ class PasswordsController < ApplicationController
   def update
     if @user.update(params.permit(:password, :password_confirmation))
       @user.sessions.destroy_all
-      redirect_to new_session_path, notice: "Password has been reset."
+      redirect_to new_session_path, notice: "パスワードを再設定しました。"
     else
-      redirect_to edit_password_path(params[:token]), alert: "Passwords did not match."
+      redirect_to edit_password_path(params[:token]), alert: "パスワードが一致しません。"
     end
   end
 
@@ -30,6 +30,6 @@ class PasswordsController < ApplicationController
     def set_user_by_token
       @user = User.find_by_password_reset_token!(params[:token])
     rescue ActiveSupport::MessageVerifier::InvalidSignature
-      redirect_to new_password_path, alert: "Password reset link is invalid or has expired."
+      redirect_to new_password_path, alert: "パスワード再設定リンクが無効か、有効期限が切れています。"
     end
 end
