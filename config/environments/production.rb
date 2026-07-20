@@ -60,10 +60,10 @@ Rails.application.configure do
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "musichub.onrender.com") }
 
-  # Deliver mail via Resend's SMTP relay (credentials: resend.api_key).
-  # smtp_settings は config/initializers/resend.rb で設定する
-  # （app/ 配下のクラスはこの時点ではまだオートロードできないため）。
-  config.action_mailer.delivery_method = :smtp
+  # Deliver mail via Resend's HTTP API (credentials: resend.api_key).
+  # Render は outbound SMTP(587等)をブロックするため、SMTPリレーではなく
+  # resend gem が提供する :resend delivery method（HTTPS API）を使う。
+  config.action_mailer.delivery_method = :resend
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
 
