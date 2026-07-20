@@ -10,7 +10,7 @@ RSpec.describe PasswordsMailer, type: :mailer do
     end
 
     it "デフォルトのfromアドレスから送信されること" do
-      expect(mail.from).to eq([ "no-reply@musichub.example" ])
+      expect(mail.from).to eq([ "no-reply@musichub.com" ])
     end
 
     it "件名がパスワード再設定であること" do
