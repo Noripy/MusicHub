@@ -70,6 +70,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install --no-install-recommends -y nodejs && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
+# credentials:edit 用のエディタ（slimイメージには何も入っていないため）
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y nano && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+ENV EDITOR="nano"
+
 # node_modules を /rails の外に置く。
 # → compose の `.:/rails` バインドマウントでも消えない（gem と同じ思想）。
 ENV NODE_PATH="/node_modules"
