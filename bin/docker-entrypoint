@@ -23,7 +23,7 @@ if [[ "$*" == *"server"* ]]; then
   # db:prepare は「DBは既に存在する」と判断して各roleのテーブル作成をスキップしてしまう。
   # 該当テーブルが無いときだけ、それぞれのschemaを明示的にロードする。
   DISABLE_DATABASE_ENVIRONMENT_CHECK=1 ./bin/rails runner '
-    { cache: "solid_cache_entries", queue: "solid_queue_jobs", cable: "solid_cable_messages" }.each do |role, table|
+    { cache: "solid_cache_entries", queue: "solid_queue_semaphores", cable: "solid_cable_messages" }.each do |role, table|
       next if ActiveRecord::Base.connection.table_exists?(table)
 
       Rails.logger.info("[docker-entrypoint] #{table} が無いため db:schema:load:#{role} を実行します")
