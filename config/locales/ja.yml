@@ -1,0 +1,19 @@
+ja:
+  errors:
+    format: "%{attribute}%{message}"
+  activerecord:
+    errors:
+      format: "%{attribute}%{message}"
+    attributes:
+      user:
+        email_address: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "パスワード（確認）"
+    errors:
+      models:
+        user:
+          attributes:
+            email_address:
+              taken: "はすでに登録されています"
+            password_confirmation:
+              confirmation: "が一致しません"

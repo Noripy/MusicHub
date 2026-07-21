@@ -23,6 +23,11 @@ module Musichub
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
 
+    # UI/エラーメッセージは日本語で統一する
+    config.i18n.default_locale = :ja
+    # ja訳が未整備なキーは en にフォールバックする（本番相当の挙動を全環境で統一）
+    config.i18n.fallbacks = true
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
