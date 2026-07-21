@@ -39,6 +39,21 @@ RSpec.describe "認証フロー", type: :system do
     end
   end
 
+  describe "ヘッダーの表示" do
+    it "未ログイン時はログアウトボタンが表示されない" do
+      visit root_path
+
+      expect(page).to have_no_content("のりぴー")
+      expect(page).to have_no_button("ログアウト")
+    end
+
+    it "ログイン時はログアウトボタンが表示される" do
+      sign_in_via_form(email: user.email_address, password: "password123")
+
+      expect(page).to have_button("ログアウト")
+    end
+  end
+
   describe "ログイン必須ページへのアクセス制御" do
     it "未ログインで /events にアクセスするとログイン画面へリダイレクトされる" do
       visit events_path

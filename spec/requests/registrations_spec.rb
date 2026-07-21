@@ -94,6 +94,11 @@ RSpec.describe "Registrations", type: :request do
         post registration_path, params: { user: valid_params[:user].merge(email_address: "taken@example.com") }
         expect(response).to have_http_status(:unprocessable_content)
       end
+
+      it "日本語のエラーメッセージが表示される" do
+        post registration_path, params: { user: valid_params[:user].merge(email_address: "taken@example.com") }
+        expect(response.body).to include("メールアドレスはすでに登録されています")
+      end
     end
 
     context "パスワードが空" do
@@ -119,6 +124,11 @@ RSpec.describe "Registrations", type: :request do
       it "422 を返す" do
         post registration_path, params: { user: valid_params[:user].merge(password_confirmation: "mismatch") }
         expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "日本語のエラーメッセージが表示される" do
+        post registration_path, params: { user: valid_params[:user].merge(password_confirmation: "mismatch") }
+        expect(response.body).to include("パスワード（確認）が一致しません")
       end
     end
   end
