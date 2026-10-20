@@ -51,7 +51,7 @@ bin/importmap audit         # JS dependency vulnerability scan
 
 ### Stack
 
-- **Ruby 4.0.4 / Rails 8.1.3**
+- **Ruby 4.0.4 / Rails 8.1.4**
 - **PostgreSQL** for primary data (via Neon in production, Docker container locally)
 - **Solid Cache / Solid Queue / Solid Cable** — SQLite-backed adapters for cache, background jobs, and ActionCable (separate `*_schema.rb` files in `db/`)
 - **Hotwire** (Turbo + Stimulus) via importmap — no Node build step for application JS

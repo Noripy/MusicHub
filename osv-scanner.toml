@@ -1,0 +1,6 @@
+# OSV-Scanner の除外設定。除外は必ず理由と期限を付け、期限切れで再判定する。
+
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+ignoreUntil = 2027-01-20
+reason = "braces は stylelint 経由の開発専用依存で、入力はリポジトリ内の固定 glob のみ。修正版未リリースのため期限付きで除外"
