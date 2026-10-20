@@ -5,6 +5,10 @@ on:
   push:
     branches: [ main ]
 
+# GITHUB_TOKEN は読み取り専用に限定する（最小権限）
+permissions:
+  contents: read
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
@@ -38,6 +42,22 @@ jobs:
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
+
+  scan_osv:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # Gemfile.lock / package-lock.json を OSV データベースと照合する
+      # サプライチェーン対策としてアクションはタグではなくコミット SHA で固定
+      - name: Scan dependencies with OSV-Scanner
+        uses: google/osv-scanner-action/osv-scanner-action@9a498708959aeaef5ef730655706c5a1df1edbc2 # v2.3.8
+        with:
+          scan-args: |-
+            --recursive
+            ./
 
   lint:
     runs-on: ubuntu-latest
