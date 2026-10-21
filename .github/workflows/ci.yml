@@ -59,6 +59,42 @@ jobs:
             --recursive
             ./
 
+  test:
+    runs-on: ubuntu-latest
+
+    # compose.yaml と同じバージョンの PostgreSQL を使う
+    services:
+      postgres:
+        image: postgres:18.2
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready -U postgres" --health-interval=5s --health-timeout=5s --health-retries=5
+
+    env:
+      RAILS_ENV: test
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/musichub_test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Build Tailwind CSS
+        run: bin/rails tailwindcss:build
+
+      - name: Prepare database
+        run: bin/rails db:create db:schema:load
+
+      - name: Run specs
+        run: bundle exec rspec
+
   lint:
     runs-on: ubuntu-latest
     env:
