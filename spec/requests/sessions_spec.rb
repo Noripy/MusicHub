@@ -14,17 +14,17 @@ RSpec.describe "Sessions", type: :request do
     context "正しい認証情報" do
       it "Session が 1 件増える" do
         expect {
-          post session_path, params: { email_address: user.email_address, password: "password123" }
+          post session_path, params: { email_address: user.email_address, password: "password1234" }
         }.to change(Session, :count).by(1)
       end
 
       it "root_path へリダイレクトされる" do
-        post session_path, params: { email_address: user.email_address, password: "password123" }
+        post session_path, params: { email_address: user.email_address, password: "password1234" }
         expect(response).to redirect_to(root_path)
       end
 
       it "ログイン成功のフラッシュメッセージが設定される" do
-        post session_path, params: { email_address: user.email_address, password: "password123" }
+        post session_path, params: { email_address: user.email_address, password: "password1234" }
         expect(flash[:notice]).to eq("ログインしました")
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe "Sessions", type: :request do
     context "存在しないメールアドレス" do
       it "Session が増えない" do
         expect {
-          post session_path, params: { email_address: "nobody@example.com", password: "password123" }
+          post session_path, params: { email_address: "nobody@example.com", password: "password1234" }
         }.not_to change(Session, :count)
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe "Sessions", type: :request do
 
   describe "DELETE /session" do
     before do
-      post session_path, params: { email_address: user.email_address, password: "password123" }
+      post session_path, params: { email_address: user.email_address, password: "password1234" }
     end
 
     it "Session が 1 件減る" do
@@ -88,11 +88,29 @@ RSpec.describe "Sessions", type: :request do
     end
 
     context "ログイン済み" do
-      before { post session_path, params: { email_address: user.email_address, password: "password123" } }
+      before { post session_path, params: { email_address: user.email_address, password: "password1234" } }
 
       it "GET /events は 200 を返す" do
         get events_path
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "ログインから Session::TTL 経過" do
+      before { post session_path, params: { email_address: user.email_address, password: "password1234" } }
+
+      it "期限内なら 200 を返す" do
+        travel Session::TTL - 1.minute do
+          get events_path
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      # Cookie の期限には頼らず、サーバー側でも失効させていることを確認する
+      it "期限切れなら Cookie が残っていても new_session_path へリダイレクトされる" do
+        Session.last.update!(created_at: (Session::TTL + 1.minute).ago)
+        get events_path
+        expect(response).to redirect_to(new_session_path)
       end
     end
   end
@@ -100,7 +118,7 @@ RSpec.describe "Sessions", type: :request do
   describe "return_to によるリダイレクト" do
     it "ログイン前にアクセスしたURLへリダイレクトされる" do
       get root_path
-      post session_path, params: { email_address: user.email_address, password: "password123" }
+      post session_path, params: { email_address: user.email_address, password: "password1234" }
       expect(response).to redirect_to(root_url)
     end
   end
