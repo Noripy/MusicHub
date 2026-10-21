@@ -5,7 +5,7 @@ RSpec.describe "TrackEntries", type: :request do
   let(:event) { create(:event, user: user) }
 
   def sign_in(user)
-    post session_path, params: { email_address: user.email_address, password: "password123" }
+    post session_path, params: { email_address: user.email_address, password: "password1234" }
   end
 
   describe "GET /track_entries（未識別エントリ一覧・全イベント横断）" do

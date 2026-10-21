@@ -15,5 +15,7 @@ ja:
           attributes:
             email_address:
               taken: "はすでに登録されています"
+            password:
+              too_short: "は%{count}文字以上で入力してください"
             password_confirmation:
               confirmation: "が一致しません"

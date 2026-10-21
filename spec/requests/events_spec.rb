@@ -4,7 +4,7 @@ RSpec.describe "Events", type: :request do
   let(:user) { create(:user) }
 
   def sign_in(user)
-    post session_path, params: { email_address: user.email_address, password: "password123" }
+    post session_path, params: { email_address: user.email_address, password: "password1234" }
   end
 
   describe "GET /events/new" do

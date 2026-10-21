@@ -14,8 +14,8 @@ RSpec.describe "Registrations", type: :request do
         user: {
           name: "テストユーザー",
           email_address: "new@example.com",
-          password: "password123",
-          password_confirmation: "password123"
+          password: "password1234",
+          password_confirmation: "password1234"
         }
       }
     end
@@ -40,8 +40,8 @@ RSpec.describe "Registrations", type: :request do
         {
           user: {
             email_address: "noname@example.com",
-            password: "password123",
-            password_confirmation: "password123"
+            password: "password1234",
+            password_confirmation: "password1234"
           }
         }
       end

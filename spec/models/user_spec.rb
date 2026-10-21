@@ -62,8 +62,25 @@ RSpec.describe User, type: :model do
     end
 
     it "password_digestが平文ではない" do
-      user = create(:user, password: "password123")
-      expect(user.password_digest).not_to eq("password123")
+      user = create(:user, password: "password1234")
+      expect(user.password_digest).not_to eq("password1234")
+    end
+  end
+
+  describe "password の長さ" do
+    it "11文字のとき無効" do
+      user = build(:user, password: "a" * 11, password_confirmation: "a" * 11)
+      expect(user).not_to be_valid
+      expect(user.errors[:password]).to include("は12文字以上で入力してください")
+    end
+
+    it "12文字のとき有効" do
+      expect(build(:user, password: "a" * 12, password_confirmation: "a" * 12)).to be_valid
+    end
+
+    it "パスワードを変更しない更新では検証しない" do
+      user = create(:user)
+      expect(described_class.find(user.id).update(name: "New Name")).to be(true)
     end
   end
 end
