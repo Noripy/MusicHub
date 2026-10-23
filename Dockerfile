@@ -10,16 +10,16 @@
 #   docker build --target development -t musichub:dev .
 #   docker build --target production  -t musichub:prod .
 #
-# Ruby バージョンは ARG で差し替え可能（READMEの 4.0.4 を既定値に）。
-# ★ ruby:<version>-slim タグが Docker Hub に存在するか一度だけ確認してください。
-ARG RUBY_VERSION=4.0.4
+# Ruby バージョンは .ruby-version と揃える（CI の lint ジョブで一致を検証）。
+# Dependabot は FROM 行の ARG を展開できないため、タグとダイジェストを直接書く。
+# ダイジェスト固定により、同じタグでも中身（OS パッケージ）が更新されれば PR が届く。
 
 
 ###############################################################################
 # 1) base — dev / prod が共通で継承する「実行時の土台」
 #    ここには “動かすのに必要な” ライブラリだけを入れる（ビルド用は入れない）
 ###############################################################################
-FROM docker.io/library/ruby:${RUBY_VERSION}-slim AS base
+FROM docker.io/library/ruby:4.0.4-slim@sha256:2f6614b6d259073d02a4c5ae3b42244fe791efec6536678777c8167cfc26bb79 AS base
 WORKDIR /rails
 
 # 実行時に必要な OS パッケージ

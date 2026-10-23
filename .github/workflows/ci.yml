@@ -121,3 +121,11 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
+      # Dependabot が Dockerfile だけ更新したとき、本番と CI/開発の Ruby がずれないようにする
+      - name: Check Ruby version matches Dockerfile
+        run: |
+          dockerfile_version="ruby-$(grep -oP '^FROM docker.io/library/ruby:\K[0-9.]+(?=-slim)' Dockerfile)"
+          if [ "$dockerfile_version" != "$(cat .ruby-version)" ]; then
+            echo "::error file=Dockerfile::Dockerfile ($dockerfile_version) と .ruby-version ($(cat .ruby-version)) の Ruby バージョンが一致しません"
+            exit 1
+          fi
