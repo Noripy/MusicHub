@@ -19,7 +19,7 @@
 # 1) base — dev / prod が共通で継承する「実行時の土台」
 #    ここには “動かすのに必要な” ライブラリだけを入れる（ビルド用は入れない）
 ###############################################################################
-FROM docker.io/library/ruby:4.0.6-slim@sha256:58479f164d5947f852da27a4436c89bb986a811f959c40552bc7f6ccaabcc9c9 AS base
+FROM docker.io/library/ruby:4.0.9-slim@sha256:88f0d8f1f2f7829c8c85c5cfee774f7ac936a7ba460e904e8c873b6a7f96c311 AS base
 WORKDIR /rails
 
 # 実行時に必要な OS パッケージ
